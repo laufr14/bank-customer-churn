@@ -39,12 +39,11 @@ GROUP BY num_of_products,
 --Churn Rate by Activity Status
 
  SELECT active_member,  
-        exited,
         COUNT(*) AS count,
         ROUND(COUNT(*)::decimal/(SELECT COUNT(*) FROM bank_customers WHERE active_member = bc.active_member )* 100 ,2 ) AS percentage
  FROM bank_customers AS bc      
- GROUP BY active_member,
-          exited;
+ GROUP BY active_member;
+          
 
 --Ranking Customers by Balance within each Geography
 SELECT
