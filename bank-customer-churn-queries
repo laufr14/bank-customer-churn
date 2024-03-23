@@ -1,0 +1,123 @@
+--Overall Churn Rate
+SELECT exited,
+      COUNT(*) AS count,
+      ROUND(COUNT(*)::decimal/(SELECT COUNT(*) FROM bank_customers )* 100 ,2 ) AS percentage
+FROM bank_customers
+GROUP BY exited;
+
+
+--Churn Rate by Geography
+SELECT geography, exited,
+       COUNT(*) AS count,
+       ROUND(COUNT(*)::decimal/(SELECT COUNT(*) FROM bank_customers )* 100 ,2 ) AS percentage
+FROM bank_customers
+GROUP BY geography,
+         exited;
+
+--Churn Rate by Age Group
+SELECT CASE WHEN age BETWEEN 18 AND 30 THEN '18-30'
+            WHEN age BETWEEN 31 AND 45 THEN '31-45'
+            WHEN age BETWEEN 46 AND 60 THEN '46-60'
+            ELSE '60+'
+            END AS age_group,
+            exited,
+            COUNT(*) AS count,
+            ROUND(COUNT(*)::decimal/(SELECT COUNT(*) FROM bank_customers )* 100 ,2 ) AS percentage
+FROM bank_customers
+GROUP BY age_group,
+         exited;
+
+--Churn Rate by Number of Products
+SELECT num_of_products,
+       exited,
+       COUNT(*) AS count,
+       ROUND(COUNT(*)::decimal/(SELECT COUNT(*) FROM bank_customers WHERE num_of_products = bc.num_of_products )* 100 ,2 ) AS percentage
+FROM bank_customers AS bc
+GROUP BY num_of_products,
+         exited;
+
+--Churn Rate by Activity Status
+
+ SELECT active_member,  
+        exited,
+        COUNT(*) AS count,
+        ROUND(COUNT(*)::decimal/(SELECT COUNT(*) FROM bank_customers WHERE active_member = bc.active_member )* 100 ,2 ) AS percentage
+ FROM bank_customers AS bc      
+ GROUP BY active_member,
+          exited;
+
+--Ranking Customers by Balance within each Geography
+SELECT
+  geography,
+  customer_id,
+  balance,
+  RANK() OVER (PARTITION BY geography ORDER BY balance DESC)  AS balance_rank
+FROM
+  bank_customers;
+
+
+--Average Balance and Age for Churned vs. Retained Customers by Geography
+SELECT
+  geography,
+  exited,
+  ROUND(AVG(balance), 2) as avg_balance,
+  ROUND(AVG(age), 2) as avg_age
+FROM
+  bank_customers
+GROUP BY
+  geography,
+  exited;
+
+--Moving Average of Churn Rate Over Age Groups  
+WITH
+  age_grouped AS (
+    SELECT
+      age,
+      exited,
+      COUNT(*) OVER (PARTITION BY age, exited) AS count,
+      COUNT(*) OVER (PARTITION BY age ) AS total_count
+    FROM
+      bank_customers
+  )
+SELECT
+  age,
+  count,
+  total_count,
+  ROUND((count::decimal / total_count), 2) AS churn_rate,
+ROUND(
+    AVG(count::decimal / total_count) OVER (
+        ORDER BY age
+        ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
+    ),
+2) AS moving_avg_churn_rate
+FROM
+  age_grouped
+GROUP BY
+  age,
+  exited,
+  count,
+  total_count
+ORDER BY
+  age;
+
+--Customer Retention and Churn by Tenure
+  SELECT tenure,
+         exited,
+         COUNT(*) AS customer_count,
+         ROUND((COUNT(*) :: decimal /SUM(COUNT(*)) OVER(PARTITION BY tenure)) * 100 , 2) AS churn_percentage
+  FROM bank_customers
+  GROUP BY tenure, exited
+  ORDER BY tenure;
+
+
+  --Percentile Rank of Credit Score Among Churned Customers
+SELECT
+    customer_id,
+    credit_score,
+    NTILE(100) OVER (ORDER BY credit_score) AS percentile_rank
+FROM
+    bank_customers
+WHERE
+    exited = 'Yes';
+
+
