@@ -44,6 +44,45 @@ GROUP BY num_of_products,
  FROM bank_customers AS bc      
  GROUP BY active_member;
           
+-- Churn Rate by Card Type 
+
+SELECT card_type,
+       COUNT(*) AS total_customers,
+       SUM(CASE WHEN exited = 'Yes' THEN 1 ELSE 0 END) AS churned_customers,
+       ROUND(SUM(CASE WHEN exited = 'Yes' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS churn_rate
+FROM bank_customers
+GROUP BY  card_type
+ORDER BY churn_rate DESC;       
+
+--Churn Rate by Credit Card status
+
+SELECT "credit_card_status ",
+       COUNT(*) AS total_customers,
+       SUM(CASE WHEN exited = 'Yes' THEN 1 ELSE 0 END) AS churned_customers,
+       ROUND(SUM(CASE WHEN exited = 'Yes' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS churn_rate
+ FROM bank_customers
+ GROUP BY "credit_card_status " 
+ ORDER BY churn_rate DESC;    
+
+--Summary Statistics for Estimated Salary 
+
+SELECT COUNT(estimated_salary) AS count,
+       ROUND(AVG(estimated_salary), 2) AS mean,
+       STDDEV(estimated_salary) AS stddev,
+       MIN(estimated_salary) AS min,
+       PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY estimated_salary) AS median,
+       PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY estimated_salary) AS first_quartile,
+       PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY estimated_salary) AS third_quartile,
+       MAX(estimated_salary) AS max
+FROM bank_customers;    
+
+--Correlation between Estimated Salary and Card type
+
+SELECT card_type,
+       ROUND(AVG(estimated_salary), 2) AS average_salary,
+       PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY estimated_salary) AS median_salary
+FROM bank_customers
+GROUP BY card_type;       
 
 --Ranking Customers by Balance within each Geography
 SELECT
@@ -53,7 +92,6 @@ SELECT
   RANK() OVER (PARTITION BY geography ORDER BY balance DESC)  AS balance_rank
 FROM
   bank_customers;
-
 
 --Average Balance and Age for Churned vs. Retained Customers by Geography
 SELECT
@@ -118,5 +156,7 @@ FROM
     bank_customers
 WHERE
     exited = 'Yes';
+
+
 
 
