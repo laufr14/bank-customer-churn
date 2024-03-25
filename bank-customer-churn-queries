@@ -5,14 +5,6 @@ SELECT exited,
 FROM bank_customers
 GROUP BY exited;
 
---Churn Rate by Geography
-SELECT geography, exited,
-       COUNT(*) AS count,
-       ROUND(COUNT(*)::decimal/(SELECT COUNT(*) FROM bank_customers )* 100 ,2 ) AS percentage
-FROM bank_customers
-GROUP BY geography,
-         exited;
-
 --Churn Rate by Age Group
 SELECT CASE WHEN age BETWEEN 18 AND 30 THEN '18-30'
             WHEN age BETWEEN 31 AND 45 THEN '31-45'
@@ -24,6 +16,14 @@ SELECT CASE WHEN age BETWEEN 18 AND 30 THEN '18-30'
             ROUND(COUNT(*)::decimal/(SELECT COUNT(*) FROM bank_customers )* 100 ,2 ) AS percentage
 FROM bank_customers
 GROUP BY age_group,
+         exited;
+
+--Churn Rate by Geography
+SELECT geography, exited,
+       COUNT(*) AS count,
+       ROUND(COUNT(*)::decimal/(SELECT COUNT(*) FROM bank_customers )* 100 ,2 ) AS percentage
+FROM bank_customers
+GROUP BY geography,
          exited;
 
 --Churn Rate by Number of Products
