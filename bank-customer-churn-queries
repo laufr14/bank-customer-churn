@@ -5,7 +5,6 @@ SELECT exited,
 FROM bank_customers
 GROUP BY exited;
 
-
 --Churn Rate by Geography
 SELECT geography, exited,
        COUNT(*) AS count,
@@ -64,9 +63,10 @@ SELECT "credit_card_status ",
  GROUP BY "credit_card_status " 
  ORDER BY churn_rate DESC;    
 
---Summary Statistics for Estimated Salary 
+--Summary Statistics for Estimated Salary, Churned and Retained Customers
 
-SELECT COUNT(estimated_salary) AS count,
+SELECT exited,
+       COUNT(estimated_salary) AS count,
        ROUND(AVG(estimated_salary), 2) AS mean,
        STDDEV(estimated_salary) AS stddev,
        MIN(estimated_salary) AS min,
@@ -74,9 +74,10 @@ SELECT COUNT(estimated_salary) AS count,
        PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY estimated_salary) AS first_quartile,
        PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY estimated_salary) AS third_quartile,
        MAX(estimated_salary) AS max
-FROM bank_customers;    
+FROM bank_customers
+GROUP BY exited;   
 
---Correlation between Estimated Salary and Card type
+--Correlation between Estimated Salary and Card Type
 
 SELECT card_type,
        ROUND(AVG(estimated_salary), 2) AS average_salary,
@@ -84,7 +85,21 @@ SELECT card_type,
 FROM bank_customers
 GROUP BY card_type;       
 
---Ranking Customers by Balance within each Geography
+--Average Satisfaction by Complaint Status 
+
+SELECT filed_complaint,
+       AVG(satisfaction_score) AS average_satisfaction_score
+FROM bank_customers
+GROUP BY filed_complaint;     
+
+--Average Points by Churn Status
+
+SELECT exited,
+       AVG(point_earned) AS average_points_earned
+ FROM bank_customers
+ GROUP BY exited;      
+
+ --Ranking Customers by Balance within each Geography
 SELECT
   geography,
   customer_id,
@@ -146,8 +161,7 @@ ORDER BY
   GROUP BY tenure, exited
   ORDER BY tenure;
 
-
-  --Percentile Rank of Credit Score Among Churned Customers
+--Percentile Rank of Credit Score Among Churned Customers
 SELECT
     customer_id,
     credit_score,
