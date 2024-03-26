@@ -14,19 +14,26 @@ This project aims to analyze customer churn at an Anonymous Multinational Bank t
 Objectives
 
 •	Determine the overall churn rate.
+
 •	Analyze churn rates by demographic segments and product usage.
+
 •	Investigate the impact of account balance and credit score on customer churn.
+
 •	Provide actionable insights and recommendations to reduce churn rates.
 
 Tools Used
 
 •	Data Cleaning and Preparation: Excel
+
 •	Data Analysis: PostgreSQL, Tableau
+
 •	Reporting: Tableau for visualization
 
 How to Use This Repository
 •	To replicate the analysis, start by reviewing the data in the /data directory.
+
 •	SQL scripts located in /scripts.
+
 •	The final report and insights can be found in the /reports directory, with visualizations available here: [https://public.tableau.com/app/profile/laura.f.lix/viz/BankCustomerChurnAnalysis_17114010724490/BankCustomerChurn]
 
 Contact
