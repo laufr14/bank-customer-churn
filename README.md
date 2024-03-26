@@ -30,6 +30,7 @@ Tools Used
 •	Reporting: Tableau for visualization
 
 How to Use This Repository
+
 •	To replicate the analysis, start by reviewing the data in the /data directory.
 
 •	SQL scripts located in /scripts.
