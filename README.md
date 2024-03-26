@@ -5,7 +5,7 @@ My name is Laura and I enjoy using Data Visualization as well as analyzing datas
 
 You can view additional visualizations on [https://public.tableau.com/app/profile/laura.f.lix], where I frequently post my projects and interact with the data visualization community.
 
-Bank Customer Churn Analysis
+[Bank Customer Churn Analysis]
 
 Project Overview
 
